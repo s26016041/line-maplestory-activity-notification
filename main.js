@@ -5,7 +5,8 @@ if (result.error) throw result.error
 const linebot = require('linebot');
 const Express = require('express');
 const BodyParser = require('body-parser');
-
+const MaplestoryActivityNotification = require('./src/services/maplestoryActivityNotification.js');
+const maplestoryActivityNotification = new MaplestoryActivityNotification()
 // Line Channel info
 const bot = linebot({
   channelId: process.env.LINE_CHANNEL_ID,
@@ -38,16 +39,16 @@ bot.on('message', function (event) {
   // get user message from `event.message.text`
   // reply same message
   var replyMsg = `${event.message.text}\n${event.source.groupId}123`;
-  const  targetGroupId=event.source.groupId
-//   event.reply(replyMsg)
-bot.push(targetGroupId, { 
-    type: 'text', 
+  const targetGroupId = event.source.groupId
+  //   event.reply(replyMsg)
+  bot.push(targetGroupId, {
+    type: 'text',
     text: replyMsg
   })
-  .then(() => {
-    console.log('Message sent to group successfully!');
-  })
-  .catch((error) => {
-    console.error('Failed to send message:', error);
-  });
+    .then(() => {
+      console.log('Message sent to group successfully!');
+    })
+    .catch((error) => {
+      console.error('Failed to send message:', error);
+    });
 });
