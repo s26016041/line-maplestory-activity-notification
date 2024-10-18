@@ -15,7 +15,7 @@ class MaplestoryApi {
     /**
  *
  * 
- * @returns {Array<{ title: string, urlLink: string, bulletinId: string }>}
+ * @returns {Array<{ title: string, urlLink: string, bullentinId: string }>}
  */
     async getActivityTable() {
         try {

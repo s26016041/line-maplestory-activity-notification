@@ -1,27 +1,25 @@
 'use strict';
 const result = require('dotenv').config();
 if (result.error) throw result.error
-
 const linebot = require('linebot');
+
 const Express = require('express');
 const BodyParser = require('body-parser');
 const MaplestoryActivityNotification = require('./src/services/maplestoryActivityNotification.js');
-const maplestoryActivityNotification = new MaplestoryActivityNotification()
 // Line Channel info
 const bot = linebot({
   channelId: process.env.LINE_CHANNEL_ID,
-  channelSecret: process.env.LIEN_CHANNEL_SECRET,
+  channelSecret: process.env.LINE_CHANNEL_SECRET,
   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
 });
 
-const linebotParser = bot.parser();
+const maplestoryActivityNotification = new MaplestoryActivityNotification(bot)
+
 // const linebotParser="https://fresh-facts-give.loca.lt"
 const app = Express();
-// for line webhook usage
-app.post('/linewebhook', linebotParser);
-
+app.post('/webhook', bot.parser());
+app.use(BodyParser.json())
 app.use(BodyParser.urlencoded({ extended: true }));
-app.use(BodyParser.json());
 
 // a http endpoint for trigger broadcast
 app.post('/broadcast', (req, res) => {
@@ -35,20 +33,16 @@ app.post('/broadcast', (req, res) => {
 app.listen(3000);
 
 // echo user message
-bot.on('message', function (event) {
-  // get user message from `event.message.text`
-  // reply same message
-  var replyMsg = `${event.message.text}\n${event.source.groupId}123`;
-  const targetGroupId = event.source.groupId
-  //   event.reply(replyMsg)
-  bot.push(targetGroupId, {
-    type: 'text',
-    text: replyMsg
-  })
-    .then(() => {
-      console.log('Message sent to group successfully!');
-    })
-    .catch((error) => {
-      console.error('Failed to send message:', error);
-    });
+// bot.on('message', function (event) {
+//   console.log(event.message.text)
+
+
+// });
+
+
+bot.on('join', function (event) {
+  event.reply(`歡迎使用楓之谷活動通知機器人`)
+  if (event.source.type === 'group') {
+    maplestoryActivityNotification.addGroup(event.source.groupId)
+  }
 });
