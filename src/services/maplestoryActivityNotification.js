@@ -1,9 +1,9 @@
-const { data } = require('cheerio/dist/commonjs/api/attributes.js');
 const MaplestoryApi = require('../maplestoryApi/maplestoryApi.js');
 const fs = require('fs').promises;
-const maplestoryApi = new MaplestoryApi
+const maplestoryApi = new MaplestoryApi()
 const fileName = 'group.json'
 const Linebot = require('linebot');
+
 Linebot.LineBot
 class MaplestoryActivityNotification {
     /**
@@ -15,9 +15,6 @@ class MaplestoryActivityNotification {
            * @type {string}
            */
     bullentinId
-    /**
-              * @type {Linebot}
-              */
     lineBot
 
     constructor(lineBot) {
@@ -33,9 +30,6 @@ class MaplestoryActivityNotification {
     async init() {
         try {
             const activityTable = await maplestoryApi.getActivityTable();
-            if (activityTable.length === 0) {
-                throw new Error("活動表格為空，無法獲取 bulletinId");
-            }
             this.bullentinId = activityTable[0].bullentinId; // 設置 bulletinId
         } catch (error) {
             console.log("獲取活動表格時發生錯誤:", error);
