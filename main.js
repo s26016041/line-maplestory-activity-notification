@@ -30,7 +30,7 @@ app.post('/broadcast', (req, res) => {
   });
 });
 
-app.listen(3000);
+app.listen(80);
 
 // echo user message
 // bot.on('message', function (event) {
