@@ -68,6 +68,7 @@ class MaplestoryActivityNotification {
         try {
             const activityTable = await maplestoryApi.getActivityTable()
             console.log(activityTable[0].title)
+            console.log(`群組 ID 名單:${this.groups}`)
             for (const data of activityTable) {
                 if (data.bullentinId !== this.bullentinId) {
                     const url = data.urlLink ? data.urlLink : `https://maplestory.beanfun.com/bulletin?bid=${data.bullentinId}`;
