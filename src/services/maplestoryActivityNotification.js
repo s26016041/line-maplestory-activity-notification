@@ -67,6 +67,7 @@ class MaplestoryActivityNotification {
     async sendNotification() {
         try {
             const activityTable = await maplestoryApi.getActivityTable()
+            console.log(activityTable[0].title)
             for (const data of activityTable) {
                 if (data.bullentinId !== this.bullentinId) {
                     const url = data.urlLink ? data.urlLink : `https://maplestory.beanfun.com/bulletin?bid=${data.bullentinId}`;
