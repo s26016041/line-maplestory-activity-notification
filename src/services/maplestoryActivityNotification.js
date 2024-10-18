@@ -23,7 +23,7 @@ class MaplestoryActivityNotification {
         this.lineBot = lineBot
         setInterval(() => {
             this.sendNotification()
-        }, 10 * 60 * 1000);
+        }, 5 * 60 * 1000);
         //5 * 60 * 1000
 
     }
