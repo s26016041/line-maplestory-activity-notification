@@ -46,3 +46,8 @@ bot.on('join', function (event) {
     maplestoryActivityNotification.addGroup(event.source.groupId)
   }
 });
+bot.on('leave', function (event) {
+  if (event.source.type === 'group') {
+    maplestoryActivityNotification.deleteGroup(event.source.groupId)
+  }
+});

@@ -64,6 +64,25 @@ class MaplestoryActivityNotification {
             }
         });
     }
+    /**
+        * @param {string} groupsId 
+        */
+    deleteGroup(groupsId) {
+        const groupIndex = this.groups.indexOf(groupsId);
+        if (groupIndex === -1) {
+            return;
+        }
+        this.groups.splice(groupIndex, 1);
+        const jsonData = JSON.stringify({ items: this.groups }, null, 2); // 將 groups 轉換為 JSON 格式
+
+        fs.writeFile(fileName, jsonData, (err) => {
+            if (err) {
+                console.error('寫入文件時發生錯誤:', err);
+            } else {
+                console.log('groups 已成功寫入 group.json 文件');
+            }
+        });
+    }
     async sendNotification() {
         try {
             const activityTable = await maplestoryApi.getActivityTable()
