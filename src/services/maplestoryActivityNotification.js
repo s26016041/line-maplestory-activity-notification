@@ -41,8 +41,7 @@ class MaplestoryActivityNotification {
             process.exit(1); // 終止程序，並返回錯誤碼 1
         }
         try {
-            console.log(`儲存桶名稱: ${process.env.LINE_CHANNEL_ID} `)
-            await this.storage.bucket(process.env.LINE_CHANNEL_ID).file(fileName).download({ destination: "./group.json" })
+            await this.storage.bucket(process.env.BUCKET_NAME).file(fileName).download({ destination: "./group.json" })
             console.log(`${fileName} 已从 Google Cloud Storage 下载`)
             const data = await fs.readFile(fileName, 'utf8');
             const jsonData = JSON.parse(data);
@@ -67,7 +66,7 @@ class MaplestoryActivityNotification {
         try {
             await fs.writeFile(fileName, jsonData);
             console.log('groups 已成功寫入 group.json 文件');
-            await this.storage.bucket(process.env.LINE_CHANNEL_ID).upload(fileName);
+            await this.storage.bucket(process.env.BUCKET_NAME).upload(fileName);
             console.log(`${fileName} 已上传到 Google Cloud Storage`);
         } catch (err) {
             console.error('寫入文件時發生錯誤:', err);
@@ -87,7 +86,7 @@ class MaplestoryActivityNotification {
         try {
             await fs.writeFile(fileName, jsonData);
             console.log('groups 已成功寫入 group.json 文件');
-            await this.storage.bucket(process.env.LINE_CHANNEL_ID).upload(fileName);
+            await this.storage.bucket(process.env.BUCKET_NAME).upload(fileName);
             console.log(`${fileName} 已上传到 Google Cloud Storage`);
         } catch (err) {
             console.error('寫入文件時發生錯誤:', err);
