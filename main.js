@@ -42,12 +42,14 @@ app.listen(8080);
 
 bot.on('join', function (event) {
   event.reply(`歡迎使用楓之谷活動通知機器人`)
+console.log("event.source.type: ",event.source.type)
   if (event.source.type === 'group') {
     maplestoryActivityNotification.addGroup(event.source.groupId)
   }
 });
 bot.on('leave', function (event) {
   if (event.source.type === 'group') {
+console.log("event.source.type: ",event.source.type)
     maplestoryActivityNotification.deleteGroup(event.source.groupId)
   }
 });
