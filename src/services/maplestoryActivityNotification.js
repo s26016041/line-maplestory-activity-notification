@@ -41,6 +41,7 @@ class MaplestoryActivityNotification {
             process.exit(1); // 終止程序，並返回錯誤碼 1
         }
         try {
+            console.log(`儲存桶名稱: ${process.env.LINE_CHANNEL_ID} `)
             await this.storage.bucket(process.env.LINE_CHANNEL_ID).file(fileName).download({ destination: "./group.json" })
             console.log(`${fileName} 已从 Google Cloud Storage 下载`)
             const data = await fs.readFile(fileName, 'utf8');
