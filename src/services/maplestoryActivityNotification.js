@@ -3,6 +3,8 @@ const fs = require('fs').promises;
 const maplestoryApi = new MaplestoryApi()
 const fileName = 'group.json'
 const Linebot = require('linebot');
+const { Storage } = require('@google-cloud/storage');
+
 
 Linebot.LineBot
 class MaplestoryActivityNotification {
@@ -16,9 +18,12 @@ class MaplestoryActivityNotification {
            */
     bullentinId
     lineBot
-
+    /**
+     * @type {Storage}
+     */
+    storage
     constructor(lineBot) {
-
+        this.storage = new Storage()
         this.init()
         this.lineBot = lineBot
         setInterval(() => {
@@ -36,6 +41,8 @@ class MaplestoryActivityNotification {
             process.exit(1); // 終止程序，並返回錯誤碼 1
         }
         try {
+            await this.storage.bucket(process.env.LINE_CHANNEL_ID).file(fileName).download({ destination: "./group.json" })
+            console.log(`${fileName} 已从 Google Cloud Storage 下载`)
             const data = await fs.readFile(fileName, 'utf8');
             const jsonData = JSON.parse(data);
             this.groups = jsonData.items || []; // 如果 items 不存在，則設為空陣列
@@ -49,25 +56,26 @@ class MaplestoryActivityNotification {
     /**
          * @param {string} groupsId 
          */
-    addGroup(groupsId) {
+    async addGroup(groupsId) {
         if (this.groups.includes(groupsId)) {
             return;
         }
         this.groups.push(groupsId);
         const jsonData = JSON.stringify({ items: this.groups }, null, 2); // 將 groups 轉換為 JSON 格式
 
-        fs.writeFile(fileName, jsonData, (err) => {
-            if (err) {
-                console.error('寫入文件時發生錯誤:', err);
-            } else {
-                console.log('groups 已成功寫入 group.json 文件');
-            }
-        });
+        try {
+            await fs.writeFile(fileName, jsonData);
+            console.log('groups 已成功寫入 group.json 文件');
+            await this.storage.bucket(process.env.LINE_CHANNEL_ID).upload(fileName);
+            console.log(`${fileName} 已上传到 Google Cloud Storage`);
+        } catch (err) {
+            console.error('寫入文件時發生錯誤:', err);
+        }
     }
     /**
         * @param {string} groupsId 
         */
-    deleteGroup(groupsId) {
+    async deleteGroup(groupsId) {
         const groupIndex = this.groups.indexOf(groupsId);
         if (groupIndex === -1) {
             return;
@@ -75,13 +83,14 @@ class MaplestoryActivityNotification {
         this.groups.splice(groupIndex, 1);
         const jsonData = JSON.stringify({ items: this.groups }, null, 2); // 將 groups 轉換為 JSON 格式
 
-        fs.writeFile(fileName, jsonData, (err) => {
-            if (err) {
-                console.error('寫入文件時發生錯誤:', err);
-            } else {
-                console.log('groups 已成功寫入 group.json 文件');
-            }
-        });
+        try {
+            await fs.writeFile(fileName, jsonData);
+            console.log('groups 已成功寫入 group.json 文件');
+            await this.storage.bucket(process.env.LINE_CHANNEL_ID).upload(fileName);
+            console.log(`${fileName} 已上传到 Google Cloud Storage`);
+        } catch (err) {
+            console.error('寫入文件時發生錯誤:', err);
+        }
     }
     async sendNotification() {
         try {
