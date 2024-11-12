@@ -6,11 +6,11 @@ const cheerio = require('cheerio');
 
 class MaplestoryApi {
     params = {
-        Kind: 72,
+        Kind: 0,
         Page: 1,
-        method: 3,
+        method: 0,
         PageSize: 10,
-        toAll: 0,
+        /*toAll: 0,*/
     };
     CSRFToken = ''
     cookiesData = ''
